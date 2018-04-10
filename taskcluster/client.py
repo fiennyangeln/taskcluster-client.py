@@ -536,6 +536,11 @@ class BaseClient(object):
 
             # Try to load JSON
             try:
+                if hasattr(response, 'headers'):
+                    if 'application/json' not in response.headers.get('Content-Type', '').split(';'):
+                        return None
+                    if int(response.headers.get('Content-Length', len(response.content))) == 0:
+                        return None
                 return response.json()
             except ValueError:
                 return {"response": response}
